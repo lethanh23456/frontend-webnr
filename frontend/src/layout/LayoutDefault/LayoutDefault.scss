@@ -1,10 +1,11 @@
 
 .layout-default {
     &__header {
-        position: fixed;
+        position: sticky;
         right: 0;
         left: 0;
-        z-index: 10;
+        top: 0;
+        z-index: 9999;
     }
     &__nav{
         width: 100%;
@@ -31,9 +32,9 @@
                 width: 75px;
                 font: inherit;
                 vertical-align: baseline;
-                position: fixed;
+                position: sticky;
                 z-index: 1;
-                margin-top: 5px;
+                margin-top: 20px;
                 height: 75px;
                 background-size: 100% 100%;
                 border: 2px solid #fdf4de;
@@ -44,7 +45,7 @@
                 flex-grow: 1;
                 .navbar-nav {
                     display: flex;
-                    margin-bottom: 0;
+                    margin-bottom: 50px;
                     list-style: none;
                     justify-content: center;
                     align-items: center;
