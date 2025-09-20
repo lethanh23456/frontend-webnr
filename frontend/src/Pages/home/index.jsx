@@ -1,26 +1,10 @@
-import { useEffect, useState } from "react";
-import client from "../../api/client";
+import React from 'react';
+import './home.scss'; 
 
 function Home() {
-  const [msg, setMsg] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await client.get("/hello");
-        setMsg(res.data.message); 
-      } catch (err) {
-        console.error("Lỗi khi gọi API:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <div>
-      <h1>Dữ liệu từ backend:</h1>
-      <p>{msg}</p>
+    <div className="home">
+      helo0000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     </div>
   );
 }

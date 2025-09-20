@@ -1,5 +1,5 @@
 import PrivateRoutes from "../components/PrivateRoutes";
-import LayoutDefault from "../layout/LayoutDefault";
+import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
 import Home from "../Pages/home/index";
 
 export const routes = [
