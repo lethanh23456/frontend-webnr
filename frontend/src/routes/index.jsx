@@ -2,6 +2,7 @@ import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
 import Home from "../Pages/home/index";
 import Register from "../Pages/register/index"
+import Bangxh from "../Pages/bangxh/index"
 
 export const routes = [
   {
@@ -19,6 +20,10 @@ export const routes = [
       {
         path: "home", 
         element: <Home />,
+      },
+      {
+        path: "bangxh", 
+        element: <Bangxh />,
       },
     ],
   },
