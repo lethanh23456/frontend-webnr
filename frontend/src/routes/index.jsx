@@ -6,6 +6,7 @@ import Bangxh from "../Pages/bangxh/index";
 import DienDan from "../Pages/diendan/index";
 import SuKien from "../Pages/sukien/index";
 import VongQuay from "../Pages/vongquay/index";
+import User from "../Pages/user/index";
 
 
 
@@ -41,6 +42,10 @@ export const routes = [
       {
         path: "vongquay", 
         element: <VongQuay />,
+      },
+       {
+        path: "user", 
+        element: <User />,
       },
     ],
   },
