@@ -1,8 +1,13 @@
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
 import Home from "../Pages/home/index";
-import Register from "../Pages/register/index"
-import Bangxh from "../Pages/bangxh/index"
+import Register from "../Pages/register/index";
+import Bangxh from "../Pages/bangxh/index";
+import DienDan from "../Pages/diendan/index";
+import SuKien from "../Pages/sukien/index";
+import VongQuay from "../Pages/vongquay/index";
+
+
 
 export const routes = [
   {
@@ -24,6 +29,18 @@ export const routes = [
       {
         path: "bangxh", 
         element: <Bangxh />,
+      },
+      {
+        path: "diendan", 
+        element: <DienDan />,
+      },
+      {
+        path: "sukien", 
+        element: <SuKien />,
+      },
+      {
+        path: "vongquay", 
+        element: <VongQuay />,
       },
     ],
   },

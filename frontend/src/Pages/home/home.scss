@@ -1,3 +1,278 @@
 .home {
     height: 1000px;
+    
+    // Game Banner Section
+    .game_banner {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        margin-bottom: 40px;
+        
+        .banner_background {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+          
+            
+            
+            @keyframes shimmer {
+                0% { opacity: 0.5; }
+                100% { opacity: 1; }
+            }
+        }
+        
+        .banner_characters {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+            
+            .character {
+                position: relative;
+                z-index: 2;
+                
+                img {
+                    height: 300px;
+                    width: auto;
+                    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.3));
+                    transition: transform 0.3s ease;
+                }
+                
+                &.character_left {
+                    img {
+                        animation: floatLeft 4s ease-in-out infinite;
+                    }
+                }
+                
+                &.character_right {
+                    img {
+                        animation: floatRight 4s ease-in-out infinite reverse;
+                    }
+                }
+                
+                @keyframes floatLeft {
+                    0%, 100% { transform: translateY(0px) rotate(-5deg); }
+                    50% { transform: translateY(-15px) rotate(-2deg); }
+                }
+                
+                @keyframes floatRight {
+                    0%, 100% { transform: translateY(0px) rotate(5deg); }
+                    50% { transform: translateY(-15px) rotate(2deg); }
+                }
+            }
+        }
+        
+        .banner_content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: white;
+            
+            .game_title {
+                margin-bottom: 20px;
+                
+                h1 {
+                    font-size: 48px;
+                    font-weight: 900;
+                    margin: 0;
+                    text-shadow: 
+                        2px 2px 4px rgba(0, 0, 0, 0.5),
+                        0 0 20px rgba(255, 255, 255, 0.3);
+                    background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B35);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    animation: titleGlow 2s ease-in-out infinite alternate;
+                }
+                
+                @keyframes titleGlow {
+                    0% { filter: brightness(1); }
+                    100% { filter: brightness(1.2); }
+                }
+                
+                .title_decoration {
+                    width: 200px;
+                    height: 4px;
+                    background: linear-gradient(90deg, #FFD700, #FF6B35, #FFD700);
+                    margin: 10px auto;
+                    border-radius: 2px;
+                    animation: decorationPulse 2s ease-in-out infinite;
+                }
+                
+                @keyframes decorationPulse {
+                    0%, 100% { transform: scaleX(1); opacity: 1; }
+                    50% { transform: scaleX(1.1); opacity: 0.8; }
+                }
+            }
+            
+            .game_description {
+                p {
+                    font-size: 18px;
+                    margin: 8px 0;
+                    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+                    opacity: 0.95;
+                }
+            }
+        }
+    }
+    
+    // Download Section
+    .download_section {
+        padding: 0 20px;
+        
+        .download_title {
+            text-align: center;
+            margin-bottom: 40px;
+            
+            .title_banner {
+                display: inline-block;
+                background: linear-gradient(135deg, #FFB800, #FF8C00);
+                color: white;
+                padding: 15px 40px;
+                border-radius: 30px;
+                font-size: 24px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                box-shadow: 
+                    0 8px 25px rgba(255, 184, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                position: relative;
+                
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: -3px;
+                    left: -3px;
+                    right: -3px;
+                    bottom: -3px;
+                    background: linear-gradient(135deg, #FFD700, #FF6B35, #FFD700);
+                    border-radius: 33px;
+                    z-index: -1;
+                    animation: borderGlow 3s linear infinite;
+                }
+                
+                @keyframes borderGlow {
+                    0%, 100% { opacity: 0.8; }
+                    50% { opacity: 1; }
+                }
+            }
+        }
+        
+        .download_buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            
+            .download_item {
+                .download_button {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    padding: 18px 30px;
+                    border-radius: 15px;
+                    color: white;
+                    text-decoration: none;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                    min-width: 200px;
+                    
+                    &:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+                    }
+                    
+                    &.windows {
+                        background: linear-gradient(135deg, #0078D4, #106EBE);
+                        
+                        &:hover {
+                            box-shadow: 0 12px 35px rgba(0, 120, 212, 0.4);
+                        }
+                    }
+                    
+                    &.appstore {
+                        background: linear-gradient(135deg, #000000, #333333);
+                        
+                        &:hover {
+                            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+                        }
+                    }
+                    
+                    &.googleplay {
+                        background: linear-gradient(135deg, #01875F, #4285F4);
+                        
+                        &:hover {
+                            box-shadow: 0 12px 35px rgba(1, 135, 95, 0.4);
+                        }
+                    }
+                    
+                    .button_icon {
+                        width: 40px;
+                        height: 40px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: rgba(255, 255, 255, 0.1);
+                        border-radius: 10px;
+                        
+                        svg {
+                            width: 24px;
+                            height: 24px;
+                        }
+                    }
+                    
+                    .button_content {
+                        flex: 1;
+                        
+                        .button_label {
+                            font-size: 12px;
+                            opacity: 0.8;
+                            margin-bottom: 2px;
+                        }
+                        
+                        .button_platform {
+                            font-size: 18px;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Responsive Design
+    @media (max-width: 768px) {
+        .game_banner {
+            height: 300px;
+            
+            .banner_characters {
+                padding: 0 20px;
+                
+                .character img {
+                    height: 200px;
+                }
+            }
+            
+            .banner_content .game_title h1 {
+                font-size: 32px;
+            }
+        }
+        
+        .download_section .download_buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
 }
