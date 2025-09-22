@@ -1,6 +1,7 @@
 import PrivateRoutes from "../components/PrivateRoutes";
 import LayoutDefault from "../layout/LayoutDefault/LayoutDefault";
 import Home from "../Pages/home/index";
+import Register from "../Pages/register/index"
 
 export const routes = [
   {
@@ -9,6 +10,14 @@ export const routes = [
     children: [
       {
         index: true,
+        element: <Home />,
+      },
+        {
+        path: "register",   
+        element: <Register />,
+      },
+      {
+        path: "home", 
         element: <Home />,
       },
     ],

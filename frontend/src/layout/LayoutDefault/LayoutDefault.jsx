@@ -46,6 +46,11 @@ function LayoutDefault() {
                                     <span className="text-upcase">ĐĂNG NHẬP</span>
                                     </NavLink>
                                 </li>
+                                <li className="nav-item">
+                                    <NavLink to="/register" className="nav-link">
+                                    <span className="text-upcase">ĐĂNG KÝ</span>
+                                    </NavLink>
+                                </li>
                             </ul>
                         </div>
                     </div>
