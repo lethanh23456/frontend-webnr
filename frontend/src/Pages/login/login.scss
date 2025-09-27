@@ -1,4 +1,4 @@
-// Variables - Anime Theme Colors (same as Login)
+// Variables - Anime Theme Colors
 $anime-orange: #ff6b35;
 $anime-red: #dc2626;
 $anime-purple: #7c3aed;
@@ -6,7 +6,6 @@ $anime-dark: #1e1b4b;
 $anime-yellow: #fbbf24;
 $anime-pink: #ec4899;
 $anime-cyan: #06b6d4;
-$anime-green: #10b981;
 
 // Glass morphism variables
 $glass-bg: rgba(255, 255, 255, 0.08);
@@ -17,7 +16,7 @@ $glass-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
 $transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-// Mixins (same as Login)
+// Mixins
 @mixin glass-card($blur: 12px) {
   background: $glass-bg;
   backdrop-filter: blur($blur);
@@ -26,7 +25,15 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   box-shadow: $glass-shadow;
 }
 
-
+@mixin anime-gradient($deg: 135deg) {
+  background: linear-gradient($deg, 
+    $anime-orange 0%, 
+    $anime-red 25%, 
+    $anime-purple 50%, 
+    $anime-dark 75%, 
+    $anime-pink 100%
+  );
+}
 
 @mixin glow-effect($color, $intensity: 0.5) {
   box-shadow: 0 0 20px rgba($color, $intensity),
@@ -34,17 +41,19 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
               0 0 80px rgba($color, $intensity * 0.1);
 }
 
-
-.register-container {
+// Main Styles
+.login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   position: relative;
+
+  
 }
 
-.register-card {
+.login-card {
   @include glass-card(16px);
   border-radius: 24px;
   padding: 2rem;
@@ -57,18 +66,20 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   &:hover {
     transform: translateY(-8px);
-    @include glow-effect($anime-green, 0.4);
+    @include glow-effect($anime-purple, 0.4);
   }
+
+  
 }
 
-.register-header {
+.login-header {
   text-align: center;
   margin-bottom: 2rem;
 
-  .register-title {
+  .login-title {
     font-size: 2.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, $anime-green, $anime-cyan, $anime-purple);
+    background: linear-gradient(135deg, $anime-yellow, $anime-orange, $anime-pink);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -76,14 +87,14 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     animation: titleGlow 3s ease-in-out infinite alternate;
   }
 
-  .register-subtitle {
+  .login-subtitle {
     color: rgba(255, 255, 255, 0.8);
     font-size: 1rem;
     font-weight: 500;
   }
 }
 
-.register-form {
+.login-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -110,7 +121,7 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   .form-input {
     width: 100%;
-    height: 56px;
+    height: 56px; // Fixed height for consistency
     padding: 0 16px 0 48px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -119,7 +130,7 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     font-size: 1rem;
     line-height: 1.5;
     transition: $transition-smooth;
-    box-sizing: border-box;
+    box-sizing: border-box; // Ensure consistent sizing
 
     &::placeholder {
       color: rgba(255, 255, 255, 0.5);
@@ -127,12 +138,12 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     &:focus {
       outline: none;
-      border-color: $anime-green;
+      border-color: $anime-cyan;
       background: rgba(255, 255, 255, 0.12);
-      @include glow-effect($anime-green, 0.3);
+      @include glow-effect($anime-cyan, 0.3);
       
       ~ .input-icon .icon {
-        color: $anime-green;
+        color: $anime-cyan;
       }
     }
 
@@ -163,8 +174,18 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     border-radius: 8px;
     transition: $transition-smooth;
 
+    .icon {
+      width: 20px;
+      height: 20px;
+      color: rgba(255, 255, 255, 0.6);
+      transition: $transition-smooth;
+    }
+
     &:hover {
       background: rgba(255, 255, 255, 0.1);
+      .icon {
+        color: white;
+      }
     }
 
     &:disabled {
@@ -182,10 +203,51 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+
+  .remember-me {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: $transition-smooth;
+
+    .checkbox {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+      accent-color: $anime-cyan;
+    }
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  .forgot-password {
+    background: none;
+    border: none;
+    color: $anime-cyan;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: $transition-smooth;
+
+    &:hover {
+      color: $anime-yellow;
+      text-shadow: 0 0 10px rgba($anime-yellow, 0.5);
+    }
+  }
+}
+
 .submit-button {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, $anime-green, $anime-cyan);
+  background: linear-gradient(135deg, $anime-orange, $anime-pink);
   border: none;
   border-radius: 16px;
   color: white;
@@ -200,7 +262,7 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   position: relative;
   overflow: hidden;
 
- 
+  
 
   .button-icon {
     width: 20px;
@@ -218,7 +280,7 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px) scale(1.02);
-    @include glow-effect($anime-green, 0.6);
+    @include glow-effect($anime-pink, 0.6);
     
     &::before {
       left: 100%;
@@ -240,17 +302,17 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
-.login-link {
+.register-link {
   margin-top: 20px;
   text-align: center;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.95rem;
 
-  .login-button {
+  .register-button {
     margin-left: 20px;
     background: none;
     border: none;
-    color: $anime-cyan;
+    color: $anime-yellow;
     font-weight: 700;
     cursor: pointer;
     text-decoration: underline;
@@ -258,8 +320,8 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     transition: $transition-smooth;
 
     &:hover {
-      color: $anime-green;
-      text-shadow: 0 0 10px rgba($anime-green, 0.5);
+      color: $anime-orange;
+      text-shadow: 0 0 10px rgba($anime-orange, 0.5);
       transform: scale(1.05);
     }
   }
@@ -297,13 +359,31 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 // Animations
-@keyframes titleGlow {
+@keyframes floatParticles {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes rotateGradient {
   0% {
-    text-shadow: 0 0 20px rgba($anime-green, 0.5);
+    transform: rotate(0deg);
   }
   100% {
-    text-shadow: 0 0 30px rgba($anime-cyan, 0.8),
-                 0 0 40px rgba($anime-purple, 0.6);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 20px rgba($anime-yellow, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 30px rgba($anime-pink, 0.8),
+                 0 0 40px rgba($anime-orange, 0.6);
   }
 }
 
@@ -318,12 +398,12 @@ $transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
 // Responsive Design
 @media (max-width: 480px) {
-  .register-card {
+  .login-card {
     padding: 1.5rem;
     margin: 1rem;
   }
   
-  .register-header .register-title {
+  .login-header .login-title {
     font-size: 2rem;
   }
   

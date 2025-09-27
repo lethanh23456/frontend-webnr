@@ -41,16 +41,16 @@ function LayoutDefault() {
                                     <span className="text-upcase">BẢNG XH</span>
                                     </NavLink>
                                 </li>
-                                <li className="nav-item">
+                                {/* <li className="nav-item">
                                     <NavLink to="/login" className="nav-link">
                                     <span className="text-upcase">ĐĂNG NHẬP</span>
                                     </NavLink>
-                                </li>
-                                <li className="nav-item">
+                                </li> */}
+                                {/* <li className="nav-item">
                                     <NavLink to="/register" className="nav-link">
                                     <span className="text-upcase">ĐĂNG KÝ</span>
                                     </NavLink>
-                                </li>
+                                </li> */}
                                  <li className="nav-item">
                                     <NavLink to="/user" className="nav-link">
                                     <span className="text-upcase">USER</span>

@@ -2,189 +2,119 @@ import React, { useState, useEffect } from 'react';
 import UserService from '../../services/userService'
 import './user.scss';
 import NhanVat from "../../assets/524.png";
+import { Navigate } from "react-router-dom";
 
 function User() {
-  // User info states
   const [user, setUser] = useState(null);
   const [currentBalance, setCurrentBalance] = useState(0);
   const [vangNapTuWeb, setVangNapTuWeb] = useState(0);
   const [ngocNapTuWeb, setNgocNapTuWeb] = useState(0);
-  
-  // UI states
+
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [depositAmount, setDepositAmount] = useState('');
   const [depositType, setDepositType] = useState('vang');
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
-  // Load user info from localStorage on component mount
   useEffect(() => {
     loadUserFromStorage();
   }, []);
 
-  // Load balance when user is loaded
   useEffect(() => {
-    if (user && user.username) {
+    if (user?.username) {
       loadBalance();
     }
   }, [user]);
 
   const loadUserFromStorage = () => {
-    try {
-      setInitialLoading(true);
-      
-      // Lấy user từ localStorage (đã được lưu khi login thành công)
-      const savedUser = localStorage.getItem('currentUser');
-      
-      if (!savedUser) {
-        console.log('No user found, redirect to login');
-        setInitialLoading(false);
-        return;
-      }
-
-      // Parse user data
-      const userData = JSON.parse(savedUser);
-      setUser(userData);
-      
-    } catch (error) {
-      console.error('Error loading user from storage:', error);
-      alert('Lỗi khi tải thông tin người dùng!');
-    } finally {
-      setInitialLoading(false);
+    setInitialLoading(true);
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
+    setInitialLoading(false);
   };
 
-  const loadBalance = async () => {
-    if (!user || !user.username) return;
-    
-    try {
-      setLoading(true);
-      const result = await UserService.getBalance(user.username);
-      
-      if (result.success) {
-        setVangNapTuWeb(result.data.vangNapTuWeb || 0);
-        setNgocNapTuWeb(result.data.ngocNapTuWeb || 0);
-        setCurrentBalance(result.data.currentBalance || 0);
-      } else {
-        alert(result.error);
-      }
-    } catch (error) {
-      console.error('Lỗi không mong đợi:', error);
-      alert('Đã xảy ra lỗi không mong đợi!');
-    } finally {
-      setLoading(false);
-    }
+  const loadBalance = () => {
+    if (!user?.username) return;
+
+    setLoading(true);
+    UserService.getBalance(user.username)
+      .then(result => {
+        if (result.success) {
+          setVangNapTuWeb(result.data.vangNapTuWeb || 0);
+          setNgocNapTuWeb(result.data.ngocNapTuWeb || 0);
+          setCurrentBalance(result.data.currentBalance || 0);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
   const handleLogout = () => {
-    // Clear localStorage
     localStorage.removeItem('currentUser');
-    
-    // Clear states
     setUser(null);
     setVangNapTuWeb(0);
     setNgocNapTuWeb(0);
     setCurrentBalance(0);
-    
-    // Redirect to login
-    window.location.href = '/login';
+    return <Navigate to="/resgister" replace />;
   };
 
-  const handleDeposit = async () => {
+  const handleDeposit = () => {
     const validation = UserService.validateDepositAmount(depositAmount);
-    
-    if (!validation.isValid) {
-      alert(validation.error);
-      return;
-    }
+    if (!validation.isValid) return;
 
-    try {
-      setLoading(true);
-      
-      let result;
-      if (depositType === 'vang') {
-        result = await UserService.addVangNapTuWeb(user.username, validation.amount);
+    setLoading(true);
+    const action =
+      depositType === 'vang'
+        ? UserService.addVangNapTuWeb(user.username, validation.amount)
+        : UserService.addNgocNapTuWeb(user.username, validation.amount);
+
+    action
+      .then(result => {
         if (result.success) {
-          setVangNapTuWeb(result.data.totalVangNapTuWeb);
+          if (depositType === 'vang') setVangNapTuWeb(result.data.totalVangNapTuWeb);
+          else setNgocNapTuWeb(result.data.totalNgocNapTuWeb);
+
+          setDepositAmount('');
+          setShowDepositModal(false);
         }
-      } else {
-        result = await UserService.addNgocNapTuWeb(user.username, validation.amount);
-        if (result.success) {
-          setNgocNapTuWeb(result.data.totalNgocNapTuWeb);
-        }
-      }
-      
-      if (result.success) {
-        alert(result.message);
-        setDepositAmount('');
-        setShowDepositModal(false);
-      } else {
-        alert(result.error);
-      }
-      
-    } catch (error) {
-      console.error('Lỗi không mong đợi:', error);
-      alert('Đã xảy ra lỗi không mong đợi!');
-    } finally {
-      setLoading(false);
-    }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
-  const useVangNapTuWeb = async (amount) => {
-    try {
-      setLoading(true);
-      const result = await UserService.useVangNapTuWeb(user.username, amount);
-      
-      if (result.success) {
-        setVangNapTuWeb(prev => prev - amount);
-        alert(result.message);
-      } else {
-        alert(result.error);
-      }
-    } catch (error) {
-      console.error('Lỗi không mong đợi:', error);
-      alert('Đã xảy ra lỗi không mong đợi!');
-    } finally {
-      setLoading(false);
-    }
+  const useVangNapTuWeb = (amount) => {
+    setLoading(true);
+    UserService.useVangNapTuWeb(user.username, amount)
+      .then(result => {
+        if (result.success) setVangNapTuWeb(prev => prev - amount);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
-  const useNgocNapTuWeb = async (amount) => {
-    try {
-      setLoading(true);
-      const result = await UserService.useNgocNapTuWeb(user.username, amount);
-      
-      if (result.success) {
-        setNgocNapTuWeb(prev => prev - amount);
-        alert(result.message);
-      } else {
-        alert(result.error);
-      }
-    } catch (error) {
-      console.error('Lỗi không mong đợi:', error);
-      alert('Đã xảy ra lỗi không mong đợi!');
-    } finally {
-      setLoading(false);
-    }
+  const useNgocNapTuWeb = (amount) => {
+    setLoading(true);
+    UserService.useNgocNapTuWeb(user.username, amount)
+      .then(result => {
+        if (result.success) setNgocNapTuWeb(prev => prev - amount);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(amount);
-  };
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat('vi-VN').format(num);
-  };
+  const formatNumber = (num) =>
+    new Intl.NumberFormat('vi-VN').format(num);
 
   const openDepositModal = (type) => {
     setDepositType(type);
     setShowDepositModal(true);
   };
 
-  // Show loading spinner while loading user info
   if (initialLoading) {
     return (
       <div className="user-loading">
@@ -193,25 +123,14 @@ function User() {
     );
   }
 
-  // Show login prompt if no user
   if (!user) {
-    return (
-      <div className="user-no-auth">
-        <div className="no-auth-message">
-          <h3>Bạn chưa đăng nhập</h3>
-          <p>Vui lòng đăng nhập để xem thông tin tài khoản</p>
-          <button onClick={() => window.location.href = '/login'}>
-            Đăng nhập
-          </button>
-        </div>
-      </div>
-    );
+    return <Navigate to="/login" replace />;
   }
+
 
   return (
     <div className="user">
       <div className="user-container">
-        {/* Profile Section */}
         <div className="profile-section">
           <div className="profile-card">
             <div className="avatar">
@@ -236,7 +155,6 @@ function User() {
               </div>
             </div>
 
-            {/* Logout button */}
             <div className="profile-actions">
               <button className="logout-btn" onClick={handleLogout}>
                 🚪 Đăng xuất
@@ -245,7 +163,7 @@ function User() {
           </div>
         </div>
 
-        {/* Balance Section */}
+
         <div className="balance-section">
           <div className="balance-card">
             <h3>💰 Tài khoản hiện có</h3>
@@ -290,7 +208,7 @@ function User() {
           </div>
         </div>
 
-        {/* Usage Section */}
+  
         <div className="usage-section">
           <div className="usage-card">
             <h3>⚡ Sử dụng tài nguyên</h3>
@@ -328,7 +246,6 @@ function User() {
           </div>
         </div>
 
-        {/* Actions Section */}
         <div className="actions-section">
           <div className="action-card">
             <h3>⚡ Hành động nhanh</h3>
@@ -346,7 +263,7 @@ function User() {
           </div>
         </div>
 
-        {/* Recent Activity */}
+
         <div className="activity-section">
           <div className="activity-card">
             <h3>📜 Hoạt động gần đây</h3>
@@ -380,7 +297,7 @@ function User() {
         </div>
       </div>
 
-      {/* Deposit Modal */}
+  
       {showDepositModal && (
         <div className="modal-overlay" onClick={() => setShowDepositModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>

@@ -2,35 +2,78 @@
 import { api } from '../api/client';
 
 class UserService {
-    async getLogin(username, password) {
-      try {
-        const response = await api.post('/login', {
-          username: username,
-          password: password
-        });
-        return {
-          success: true,
-          data: response.data,
-          message: 'Đăng nhập thành công!'
-        };
-      } catch (error) {
-        console.error('Lỗi khi đăng nhập:', error);
-        
-        // Handle specific error cases
-        if (error.response?.status === 401) {
-          return {
-            success: false,
-            error: 'Tài khoản hoặc mật khẩu không đúng!'
-          };
-        }
-        
+  async login(username, password) {
+    try {
+      const response = await api.post('/login', {
+        username: username,
+        password: password
+      });
+      return {
+        success: true,
+        data: response.data,
+        message: 'Đăng nhập thành công!'
+      };
+    } catch (error) {
+      console.error('Lỗi khi đăng nhập:', error);
+      
+      if (error.response?.status === 401) {
         return {
           success: false,
-          error: error.response?.data?.error || 'Đăng nhập thất bại!'
+          error: 'Tài khoản hoặc mật khẩu không đúng!'
         };
       }
+      
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Đăng nhập thất bại!'
+      };
     }
+  }
 
+  async register(username, password) {
+    try {
+      const response = await api.post('/register', {
+        username: username,
+        password: password
+      });
+      
+      // Backend trả về boolean
+      const isSuccess = response.data;
+      
+      if (isSuccess) {
+        return {
+          success: true,
+          message: 'Đăng ký thành công!'
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Tên đăng nhập đã tồn tại!'
+        };
+      }
+    } catch (error) {
+      console.error('Lỗi khi đăng ký:', error);
+      
+      if (error.response?.status === 400) {
+        return {
+          success: false,
+          error: 'Tên đăng nhập đã tồn tại!'
+        };
+      }
+      
+      if (error.response?.status === 500) {
+        return {
+          success: false,
+          error: 'Lỗi server, vui lòng thử lại sau!'
+        };
+      }
+      
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Đăng ký thất bại!'
+      };
+    }
+  }
 
   async getBalance(username) {
     try {
@@ -47,7 +90,6 @@ class UserService {
       };
     }
   }
-
 
   async addVangNapTuWeb(username, amount) {
     try {
@@ -69,7 +111,6 @@ class UserService {
       };
     }
   }
-
 
   async addNgocNapTuWeb(username, amount) {
     try {
@@ -113,7 +154,6 @@ class UserService {
     }
   }
 
-
   async useNgocNapTuWeb(username, amount) {
     try {
       const response = await api.post('/useNgocNapTuWeb', {
@@ -135,7 +175,6 @@ class UserService {
     }
   }
 
-
   validateDepositAmount(amount) {
     if (!amount || isNaN(amount) || parseInt(amount) <= 0) {
       return {
@@ -150,6 +189,5 @@ class UserService {
     };
   }
 }
-
 
 export default new UserService();
