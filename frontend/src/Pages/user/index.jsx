@@ -1,146 +1,168 @@
-// User.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import UserService from '../../services/userService'
 import './user.scss';
 import NhanVat from "../../assets/524.png";
 
-// Cấu hình base URL cho API
-const API_BASE_URL = 'http://localhost:8080/api/auth';
-
-// Tạo axios instance với config
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
-});
-
 function User() {
-  // State cho user info
-  const [username, setUsername] = useState('123'); // Username từ login hoặc localStorage
-  const [currentBalance, setCurrentBalance] = useState(125000);
+  // User info states
+  const [user, setUser] = useState(null);
+  const [currentBalance, setCurrentBalance] = useState(0);
   const [vangNapTuWeb, setVangNapTuWeb] = useState(0);
   const [ngocNapTuWeb, setNgocNapTuWeb] = useState(0);
   
-  // State cho modal
+  // UI states
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [depositAmount, setDepositAmount] = useState('');
-  const [depositType, setDepositType] = useState('vang'); // 'vang' hoặc 'ngoc'
+  const [depositType, setDepositType] = useState('vang');
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
-  // Load balance khi component mount
+  // Load user info from localStorage on component mount
   useEffect(() => {
-    loadBalance();
+    loadUserFromStorage();
   }, []);
 
-  // Hàm load balance từ backend
+  // Load balance when user is loaded
+  useEffect(() => {
+    if (user && user.username) {
+      loadBalance();
+    }
+  }, [user]);
+
+  const loadUserFromStorage = () => {
+    try {
+      setInitialLoading(true);
+      
+      // Lấy user từ localStorage (đã được lưu khi login thành công)
+      const savedUser = localStorage.getItem('currentUser');
+      
+      if (!savedUser) {
+        console.log('No user found, redirect to login');
+        setInitialLoading(false);
+        return;
+      }
+
+      // Parse user data
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+      
+    } catch (error) {
+      console.error('Error loading user from storage:', error);
+      alert('Lỗi khi tải thông tin người dùng!');
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
   const loadBalance = async () => {
+    if (!user || !user.username) return;
+    
     try {
       setLoading(true);
-      const response = await apiClient.get(`/balance/${username}`);
+      const result = await UserService.getBalance(user.username);
       
-      if (response.status === 200) {
-        setVangNapTuWeb(response.data.vangNapTuWeb || 0);
-        setNgocNapTuWeb(response.data.ngocNapTuWeb || 0);
+      if (result.success) {
+        setVangNapTuWeb(result.data.vangNapTuWeb || 0);
+        setNgocNapTuWeb(result.data.ngocNapTuWeb || 0);
+        setCurrentBalance(result.data.currentBalance || 0);
+      } else {
+        alert(result.error);
       }
     } catch (error) {
-      console.error('Lỗi khi load balance:', error);
-      alert('Không thể tải thông tin tài khoản!');
+      console.error('Lỗi không mong đợi:', error);
+      alert('Đã xảy ra lỗi không mong đợi!');
     } finally {
       setLoading(false);
     }
   };
 
-  // Hàm nạp tiền (giả lập - trong thực tế sẽ tích hợp payment gateway)
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.removeItem('currentUser');
+    
+    // Clear states
+    setUser(null);
+    setVangNapTuWeb(0);
+    setNgocNapTuWeb(0);
+    setCurrentBalance(0);
+    
+    // Redirect to login
+    window.location.href = '/login';
+  };
+
   const handleDeposit = async () => {
-    if (!depositAmount || isNaN(depositAmount) || parseInt(depositAmount) <= 0) {
-      alert('Vui lòng nhập số tiền hợp lệ!');
+    const validation = UserService.validateDepositAmount(depositAmount);
+    
+    if (!validation.isValid) {
+      alert(validation.error);
       return;
     }
 
     try {
       setLoading(true);
       
-      // Giả lập nạp tiền thành công
-      // Trong thực tế, bạn cần tích hợp với payment gateway trước
-      const amount = parseInt(depositAmount);
-      
-      // Gọi API để cộng thêm vào số hiện có trong database
+      let result;
       if (depositType === 'vang') {
-        const response = await apiClient.post('/addVangNapTuWeb', {
-          username: username,
-          amount: amount
-        });
-        
-        if (response.status === 200) {
-          setVangNapTuWeb(response.data.totalVangNapTuWeb);
-          alert(`Nạp ${amount} vàng thành công! Tổng: ${response.data.totalVangNapTuWeb}`);
+        result = await UserService.addVangNapTuWeb(user.username, validation.amount);
+        if (result.success) {
+          setVangNapTuWeb(result.data.totalVangNapTuWeb);
         }
       } else {
-        const response = await apiClient.post('/addNgocNapTuWeb', {
-          username: username,
-          amount: amount
-        });
-        
-        if (response.status === 200) {
-          setNgocNapTuWeb(response.data.totalNgocNapTuWeb);
-          alert(`Nạp ${amount} ngọc thành công! Tổng: ${response.data.totalNgocNapTuWeb}`);
+        result = await UserService.addNgocNapTuWeb(user.username, validation.amount);
+        if (result.success) {
+          setNgocNapTuWeb(result.data.totalNgocNapTuWeb);
         }
       }
       
-      setDepositAmount('');
-      setShowDepositModal(false);
+      if (result.success) {
+        alert(result.message);
+        setDepositAmount('');
+        setShowDepositModal(false);
+      } else {
+        alert(result.error);
+      }
       
     } catch (error) {
-      console.error('Lỗi khi nạp tiền:', error);
-      alert(error.response?.data?.error || 'Nạp tiền thất bại!');
+      console.error('Lỗi không mong đợi:', error);
+      alert('Đã xảy ra lỗi không mong đợi!');
     } finally {
       setLoading(false);
     }
   };
 
-
-
-  // Hàm sử dụng vàng nạp từ web
   const useVangNapTuWeb = async (amount) => {
     try {
       setLoading(true);
+      const result = await UserService.useVangNapTuWeb(user.username, amount);
       
-      const response = await apiClient.post('/useVangNapTuWeb', {
-        username: username,
-        amount: amount
-      });
-      
-      if (response.status === 200) {
+      if (result.success) {
         setVangNapTuWeb(prev => prev - amount);
-        alert(`Đã sử dụng ${amount} vàng nạp từ web! Còn lại: ${response.data.remainingVangNapTuWeb}`);
+        alert(result.message);
+      } else {
+        alert(result.error);
       }
     } catch (error) {
-      console.error('Lỗi khi sử dụng vàng:', error);
-      alert(error.response?.data?.error || 'Không thể sử dụng vàng!');
+      console.error('Lỗi không mong đợi:', error);
+      alert('Đã xảy ra lỗi không mong đợi!');
     } finally {
       setLoading(false);
     }
   };
 
-  // Hàm sử dụng ngọc nạp từ web
   const useNgocNapTuWeb = async (amount) => {
     try {
       setLoading(true);
+      const result = await UserService.useNgocNapTuWeb(user.username, amount);
       
-      const response = await apiClient.post('/useNgocNapTuWeb', {
-        username: username,
-        amount: amount
-      });
-      
-      if (response.status === 200) {
+      if (result.success) {
         setNgocNapTuWeb(prev => prev - amount);
-        alert(`Đã sử dụng ${amount} ngọc nạp từ web! Còn lại: ${response.data.remainingNgocNapTuWeb}`);
+        alert(result.message);
+      } else {
+        alert(result.error);
       }
     } catch (error) {
-      console.error('Lỗi khi sử dụng ngọc:', error);
-      alert(error.response?.data?.error || 'Không thể sử dụng ngọc!');
+      console.error('Lỗi không mong đợi:', error);
+      alert('Đã xảy ra lỗi không mong đợi!');
     } finally {
       setLoading(false);
     }
@@ -157,6 +179,35 @@ function User() {
     return new Intl.NumberFormat('vi-VN').format(num);
   };
 
+  const openDepositModal = (type) => {
+    setDepositType(type);
+    setShowDepositModal(true);
+  };
+
+  // Show loading spinner while loading user info
+  if (initialLoading) {
+    return (
+      <div className="user-loading">
+        <div className="loading-spinner">Đang tải thông tin người dùng...</div>
+      </div>
+    );
+  }
+
+  // Show login prompt if no user
+  if (!user) {
+    return (
+      <div className="user-no-auth">
+        <div className="no-auth-message">
+          <h3>Bạn chưa đăng nhập</h3>
+          <p>Vui lòng đăng nhập để xem thông tin tài khoản</p>
+          <button onClick={() => window.location.href = '/login'}>
+            Đăng nhập
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="user">
       <div className="user-container">
@@ -165,27 +216,36 @@ function User() {
           <div className="profile-card">
             <div className="avatar">
               <div className="avatar-img">
-                 <img src={NhanVat} alt="galick" />
+                <img src={NhanVat} alt="avatar" />
               </div>
-              <div className="level-badge">42</div>
+              <div className="level-badge">{user.level || 1}</div>
             </div>
-            <h2 className="username">Goku_Fighter ({username})</h2>
-            <p className="user-title">Saiyan Warrior</p>
+            <h2 className="username">
+              {user.displayName || user.username} ({user.username})
+            </h2>
+            <p className="user-title">{user.title || "New Player"}</p>
             
             <div className="stats">
               <div className="stat-item">
                 <span className="stat-label">🏆 Thành tích</span>
-                <span className="stat-value">1,247</span>
+                <span className="stat-value">{formatNumber(user.achievements || 0)}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">🔥 Chuỗi thắng</span>
-                <span className="stat-value">15</span>
+                <span className="stat-value">{user.winStreak || 0}</span>
               </div>
+            </div>
+
+            {/* Logout button */}
+            <div className="profile-actions">
+              <button className="logout-btn" onClick={handleLogout}>
+                🚪 Đăng xuất
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Balance Section - Updated */}
+        {/* Balance Section */}
         <div className="balance-section">
           <div className="balance-card">
             <h3>💰 Tài khoản hiện có</h3>
@@ -207,14 +267,14 @@ function User() {
             <div className="balance-actions">
               <button 
                 className="deposit-btn"
-                onClick={() => {setShowDepositModal(true); setDepositType('vang');}}
+                onClick={() => openDepositModal('vang')}
                 disabled={loading}
               >
                 + Nạp Vàng
               </button>
               <button 
                 className="deposit-btn ngoc-btn"
-                onClick={() => {setShowDepositModal(true); setDepositType('ngoc');}}
+                onClick={() => openDepositModal('ngoc')}
                 disabled={loading}
               >
                 + Nạp Ngọc
@@ -230,7 +290,7 @@ function User() {
           </div>
         </div>
 
-        {/* Usage Section - New */}
+        {/* Usage Section */}
         <div className="usage-section">
           <div className="usage-card">
             <h3>⚡ Sử dụng tài nguyên</h3>
@@ -320,7 +380,7 @@ function User() {
         </div>
       </div>
 
-      {/* Deposit Modal - Updated */}
+      {/* Deposit Modal */}
       {showDepositModal && (
         <div className="modal-overlay" onClick={() => setShowDepositModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>

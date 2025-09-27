@@ -7,6 +7,7 @@ import DienDan from "../Pages/diendan/index";
 import SuKien from "../Pages/sukien/index";
 import VongQuay from "../Pages/vongquay/index";
 import User from "../Pages/user/index";
+import Login from "../Pages/login/index";
 
 
 
@@ -46,6 +47,10 @@ export const routes = [
        {
         path: "user", 
         element: <User />,
+      },
+       {
+        path: "login", 
+        element: <Login />,
       },
     ],
   },
