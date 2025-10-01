@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserService from '../../services/userService';
 import './Login.scss';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -11,6 +13,8 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,12 +31,9 @@ function Login() {
     }
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
  
-
     setLoading(true);
     try {
       const result = await UserService.login(formData.username, formData.password);
@@ -42,13 +43,15 @@ function Login() {
           username: formData.username
         };
         localStorage.setItem('currentUser', JSON.stringify(userData));
+        const saved = localStorage.getItem('currentUser');
+        console.log(saved);
         if (rememberMe) {
           localStorage.setItem('rememberedUsername', formData.username);
         } else {
           localStorage.removeItem('rememberedUsername');
         }
         alert(result.message || 'Đăng nhập thành công!');
-        window.location.href = '/user';
+        navigate('/user');
       } else {
         alert(result.error);
       }
@@ -85,7 +88,6 @@ function Login() {
             {errors.username && <p className="error-message">{errors.username}</p>}
           </div>
 
-
           <div className="input-group">
             <div className="input-icon">
               <i className="icon">🔒</i>
@@ -110,7 +112,6 @@ function Login() {
             {errors.password && <p className="error-message">{errors.password}</p>}
           </div>
 
-  
           <div className="form-options">
             <label className="remember-me">
               <input
@@ -127,14 +128,12 @@ function Login() {
             </button>
           </div>
 
-  
           <button type="submit" disabled={loading} className={`submit-button ${loading ? 'loading' : ''}`}>
             {loading ? <div className="spinner"></div> : <span className="button-icon">➡️</span>}
             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
         </form>
 
-    
         <div className="register-link">
           <span>Chưa có tài khoản? </span>
           <button onClick={() => (window.location.href = '/register')} className="register-button">
@@ -142,7 +141,6 @@ function Login() {
           </button>
         </div>
 
-    
         <div className="home-link">
           <button onClick={() => (window.location.href = '/')} className="home-button">
             <span className="home-icon">⬅</span> Quay về trang chủ

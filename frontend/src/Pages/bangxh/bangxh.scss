@@ -1,249 +1,732 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
 .bangxh {
-    height: 1000px;
-    margin-bottom: 200px;
-    
-    .rank_filter {
-        .logoBxh {
-            margin-top: 30px;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
+  min-height: 1000px;
+  margin-bottom: 200px;
+  padding-bottom: 50px;
+  
+  .rank_filter {
+    .logoBxh {
+      margin-top: 30px;
+      text-align: center;
+      padding: 20px;
+      animation: fadeInUp 0.8s ease-out;
+      
+      img {
+        max-width: 300px;
+        filter: drop-shadow(0 10px 30px rgba(255, 215, 0, 0.3));
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.05);
         }
+      }
+    }
+  }
+  
+  // Loading State
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 20px;
+    
+    .loading_spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 215, 0, 0.2);
+      border-top-color: #FFD700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
     
-    // Top Section
-    .top_section {
-        margin-top: 30px;
-        padding: 0 20px;
-        
-        .top_tabs {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            
-            .tab {
-                background: linear-gradient(135deg, #FFB800, #FFA500);
-                color: white;
-                padding: 12px 30px;
-                border-radius: 25px;
-                font-weight: bold;
-                cursor: pointer;
-                position: relative;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-                transition: all 0.3s ease;
-                
-                &.active {
-                    background: linear-gradient(135deg, #FF6B35, #F7931E);
-                    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-                }
-                
-                &:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-                }
-            }
-        }
-        
-        .top_podium {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 20px;
-            margin-bottom: 40px;
-            
-            .rank_item {
-                text-align: center;
-                background: rgba(255, 255, 255, 0.95);
-                border-radius: 15px;
-                padding: 20px;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-                border: 2px solid transparent;
-                transition: all 0.3s ease;
-                
-                &:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-                }
-                
-                .rank_number {
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 18px;
-                    margin: 0 auto 15px;
-                }
-                
-                .avatar {
-                    margin-bottom: 10px;
-                    
-                    img {
-                        width: 60px;
-                        height: 60px;
-                        border-radius: 50%;
-                        border: 3px solid #FFD700;
-                    }
-                }
-                
-                .username {
-                    font-weight: bold;
-                    color: #333;
-                    margin-bottom: 8px;
-                    font-size: 16px;
-                }
-                
-                .power, .detu {
-                    font-size: 12px;
-                    color: #666;
-                    margin: 4px 0;
-                }
-                
-                &.rank_1 {
-                    order: 2;
-                    border-color: #FFD700;
-                    background: #FEF8E7;
-
-                    
-                    .rank_number {
-                        background: linear-gradient(135deg, #FFD700, #FFA500);
-                    }
-                }
-                
-                &.rank_2 {
-                    order: 1;
-                    border-color: #C0C0C0;
-                    background: #FEF8E7;
-                    
-                    .rank_number {
-                        background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
-                    }
-                }
-                
-                &.rank_3 {
-                    order: 3;
-                    border-color: #CD7F32;
-                    background: #FEF8E7;
-
-                    
-                    .rank_number {
-                        background: linear-gradient(135deg, #CD7F32, #B8860B);
-                    }
-                }
-            }
-        }
+    p {
+      color: #FFD700;
+      font-size: 18px;
+      font-weight: 600;
     }
+  }
+  
+  // Top Section
+  .top_section {
+    margin-top: 50px;
+    padding: 0 20px;
+    animation: fadeInUp 1s ease-out 0.2s both;
     
-    // Ranking Table
-    .ranking_table {
-        margin-left: auto;
-        margin-right: auto;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    .top_tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+      
+      .tab {
+        position: relative;
+        background: linear-gradient(135deg, #2d3561 0%, #1f2544 100%);
+        color: #e0e0e0;
+        padding: 15px 35px;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 2px solid rgba(255, 215, 0, 0.2);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         overflow: hidden;
-        width: 1000px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         
-        .table_header {
-            background: #F7E6BA;
-            color: black;
-            display: grid;
-            grid-template-columns: 80px 1fr 1fr 1fr;
-            padding: 15px 20px;
-            font-weight: bold;
-            
-            .header_item {
-                text-align: center;
-                font-size: 14px;
-            }
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+          transition: left 0.5s;
         }
         
-        .table_body {
-            .table_row {
-                display: grid;
-                grid-template-columns: 80px 1fr 1fr 1fr;
-                padding: 15px 20px;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-                align-items: center;
-                transition: background-color 0.3s ease;
-                
-                &:hover {
-                    background-color:#FEF8E7;
-                }
-                
-                &:last-child {
-                    border-bottom: none;
-                }
-                
-                .rank_badge {
-                    width: 35px;
-                    height: 35px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: bold;
-                    font-size: 14px;
-                    
-                    &.gold {
-                        background: linear-gradient(135deg, #FFD700, #FFA500);
-                        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-                    }
-                    
-                    &.silver {
-                        background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
-                        box-shadow: 0 4px 15px rgba(192, 192, 192, 0.3);
-                    }
-                    
-                    &.bronze {
-                        background: linear-gradient(135deg, #CD7F32, #B8860B);
-                        box-shadow: 0 4px 15px rgba(205, 127, 50, 0.3);
-                    }
-                }
-                
-                .rank_number {
-                    font-weight: bold;
-                    color: #666;
-                    font-size: 16px;
-                    text-align: center;
-                }
-                
-                .player_info {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    
-                    img {
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 50%;
-                        border: 2px solid #ddd;
-                    }
-                    
-                    span {
-                        font-weight: 500;
-                        color: #333;
-                    }
-                }
-                
-              
-                
-                .power_value {
-                    color: black;
-                    text-align: center;
-
-                }
-                
-                .detu_value {
-                    color: black;
-                    text-align: center;
-                }
-            }
+        &:hover::before {
+          left: 100%;
         }
+        
+        .tab_icon {
+          font-size: 20px;
+          transition: transform 0.3s ease;
+        }
+        
+        .tab_text {
+          font-size: 14px;
+          letter-spacing: 0.5px;
+        }
+        
+        &.active {
+          background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+          color: #1a1a2e;
+          border-color: #FFD700;
+          box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5),
+                      0 0 50px rgba(255, 215, 0, 0.3);
+          transform: translateY(-3px) scale(1.05);
+          
+          .tab_icon {
+            transform: scale(1.2) rotate(10deg);
+          }
+        }
+        
+        &:hover:not(.active):not(.tab_disabled) {
+          transform: translateY(-3px);
+          border-color: #FFD700;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        &.tab_disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          
+          &:hover {
+            transform: none;
+          }
+        }
+      }
     }
+    
+    .top_podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 30px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+      
+      .rank_item {
+        position: relative;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px 25px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        min-width: 200px;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.5), transparent);
+          border-radius: 20px;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+        }
+        
+        &:hover {
+          transform: translateY(-15px) scale(1.05);
+          box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+          
+          &::before {
+            opacity: 1;
+          }
+          
+          .avatar img {
+            transform: scale(1.1) rotate(5deg);
+          }
+        }
+        
+        .crown {
+          position: absolute;
+          top: -25px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 40px;
+          animation: float 2s ease-in-out infinite;
+          filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.5));
+        }
+        
+        .rank_badge {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: 900;
+          font-size: 24px;
+          margin: 0 auto 20px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+          position: relative;
+          z-index: 1;
+          
+          &::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            background: inherit;
+            filter: blur(10px);
+            opacity: 0.5;
+            z-index: -1;
+            animation: pulse 2s ease-in-out infinite;
+          }
+        }
+        
+        .avatar {
+          position: relative;
+          margin-bottom: 15px;
+          
+          img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+          }
+          
+          .avatar_glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            z-index: 0;
+            animation: glow 2s ease-in-out infinite;
+          }
+        }
+        
+        .username {
+          font-weight: 800;
+          color: #FFD700;
+          margin-bottom: 15px;
+          font-size: 18px;
+          text-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+          letter-spacing: 0.5px;
+        }
+        
+        .stats {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          
+          .stat_item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: 10px;
+            
+            .stat_label {
+              font-size: 12px;
+              color: #aaa;
+              font-weight: 600;
+            }
+            
+            .stat_value {
+              font-size: 14px;
+              color: #FFD700;
+              font-weight: 700;
+            }
+          }
+        }
+        
+        &.rank_1 {
+          order: 2;
+          
+          .rank_badge_gold {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+          }
+          
+          .avatar img {
+            border-color: #FFD700;
+          }
+          
+          .glow_gold {
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, transparent 70%);
+          }
+          
+          .crown_gold {
+            animation-delay: 0s;
+          }
+        }
+        
+        &.rank_2 {
+          order: 1;
+          margin-top: 20px;
+          
+          .rank_badge_silver {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+          }
+          
+          .avatar img {
+            border-color: #C0C0C0;
+            width: 80px;
+            height: 80px;
+          }
+          
+          .glow_silver {
+            background: radial-gradient(circle, rgba(192, 192, 192, 0.6) 0%, transparent 70%);
+          }
+          
+          .crown_silver {
+            font-size: 35px;
+            animation-delay: 0.2s;
+          }
+        }
+        
+        &.rank_3 {
+          order: 3;
+          margin-top: 20px;
+          
+          .rank_badge_bronze {
+            background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+          }
+          
+          .avatar img {
+            border-color: #CD7F32;
+            width: 80px;
+            height: 80px;
+          }
+          
+          .glow_bronze {
+            background: radial-gradient(circle, rgba(205, 127, 50, 0.6) 0%, transparent 70%);
+          }
+          
+          .crown_bronze {
+            font-size: 35px;
+            animation-delay: 0.4s;
+          }
+        }
+      }
+    }
+  }
+  
+  // Ranking Table
+  .ranking_table {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    animation: fadeInUp 1.2s ease-out 0.4s both;
+    
+    .table_header {
+      background: #FFD700;
+      color: #FFD700;
+      display: grid;
+      grid-template-columns: 100px 1fr 1fr 1fr;
+      padding: 20px 30px;
+      font-weight: 800;
+      border-bottom: 3px solid rgba(255, 215, 0, 0.3);
+      letter-spacing: 1px;
+      
+      .header_item {
+        text-align: center;
+        font-size: 15px;
+        text-transform: uppercase;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
+    }
+    
+    .table_body {
+      
+      
+      &::-webkit-scrollbar {
+        width: 10px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #FFD700, #FFA500);
+        border-radius: 10px;
+        
+        &:hover {
+          background: linear-gradient(180deg, #FFA500, #FFD700);
+        }
+      }
+      
+      .table_row {
+        display: grid;
+        grid-template-columns: 100px 1fr 1fr 1fr;
+        padding: 18px 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        align-items: center;
+        transition: all 0.3s ease;
+        position: relative;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 4px;
+          background: linear-gradient(180deg, #FFD700, #FFA500);
+          transform: scaleY(0);
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover {
+          background: rgba(255, 215, 0, 0.1);
+          transform: translateX(5px);
+          
+          &::before {
+            transform: scaleY(1);
+          }
+          
+          .player_avatar img {
+            transform: scale(1.1);
+          }
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .rank_cell {
+          text-align: center;
+          
+          .rank_medal {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            
+            &.rank_medal_1 {
+              background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            }
+            
+            &.rank_medal_2 {
+              background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+            }
+            
+            &.rank_medal_3 {
+              background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+            }
+          }
+          
+          .rank_number {
+            font-weight: 700;
+            color: #aaa;
+            font-size: 18px;
+          }
+        }
+        
+        .player_info {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          
+          .player_avatar {
+            position: relative;
+            
+            img {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              border: 3px solid rgba(255, 215, 0, 0.3);
+              transition: transform 0.3s ease;
+            }
+          }
+          
+          .player_name {
+            font-weight: 600;
+            color: #e0e0e0;
+            font-size: 16px;
+          }
+        }
+        
+        .power_value,
+        .detu_value {
+          color: #FFD700;
+          text-align: center;
+          font-weight: 700;
+          font-size: 16px;
+          text-shadow: 0 2px 5px rgba(255, 215, 0, 0.3);
+        }
+      }
+      
+      .no_data {
+        text-align: center;
+        padding: 50px 20px;
+        color: #aaa;
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 1200px) {
+  .bangxh {
+    .ranking_table {
+      max-width: 95%;
+      margin: 0 auto;
+      
+      .table_header,
+      .table_body .table_row {
+        grid-template-columns: 80px 1fr 1fr 1fr;
+        padding: 15px 20px;
+      }
+      
+      .table_header .header_item {
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .bangxh {
+    .rank_filter .logoBxh img {
+      max-width: 200px;
+    }
+    
+    .top_section {
+      .top_tabs {
+        gap: 10px;
+        
+        .tab {
+          padding: 12px 20px;
+          font-size: 12px;
+          
+          .tab_icon {
+            font-size: 16px;
+          }
+          
+          .tab_text {
+            font-size: 12px;
+          }
+        }
+      }
+      
+      .top_podium {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        
+        .rank_item {
+          width: 90%;
+          max-width: 300px;
+          margin-top: 0 !important;
+          
+          &.rank_1,
+          &.rank_2,
+          &.rank_3 {
+            order: initial;
+          }
+          
+          .avatar img {
+            width: 80px !important;
+            height: 80px !important;
+          }
+        }
+      }
+    }
+    
+    .ranking_table {
+      .table_header,
+      .table_body .table_row {
+        grid-template-columns: 60px 1fr 100px 100px;
+        padding: 12px 15px;
+      }
+      
+      .table_header .header_item {
+        font-size: 11px;
+      }
+      
+      .table_body .table_row {
+        .player_info {
+          gap: 10px;
+          
+          .player_avatar img {
+            width: 40px;
+            height: 40px;
+          }
+          
+          .player_name {
+            font-size: 14px;
+          }
+        }
+        
+        .power_value,
+        .detu_value {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .bangxh {
+    .top_section .top_tabs {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0 20px;
+      
+      .tab {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    .ranking_table {
+      border-radius: 15px;
+      
+      .table_header,
+      .table_body .table_row {
+        grid-template-columns: 50px 1fr 80px 80px;
+        padding: 10px;
+        gap: 5px;
+      }
+      
+      .table_header .header_item {
+        font-size: 10px;
+      }
+      
+      .table_body .table_row {
+        .rank_cell .rank_medal {
+          width: 35px;
+          height: 35px;
+          font-size: 14px;
+        }
+        
+        .player_info {
+          gap: 8px;
+          
+          .player_avatar img {
+            width: 35px;
+            height: 35px;
+          }
+          
+          .player_name {
+            font-size: 12px;
+          }
+        }
+        
+        .power_value,
+        .detu_value {
+          font-size: 11px;
+        }
+      }
+    }
+  }
 }
