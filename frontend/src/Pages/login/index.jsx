@@ -33,7 +33,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
- 
+
     setLoading(true);
     try {
       const result = await UserService.login(formData.username, formData.password);
@@ -42,16 +42,27 @@ function Login() {
           ...result.data,
           username: formData.username
         };
+
+      
         localStorage.setItem('currentUser', JSON.stringify(userData));
         const saved = localStorage.getItem('currentUser');
-        console.log(saved);
+        console.log("Saved user:", saved);
+
         if (rememberMe) {
           localStorage.setItem('rememberedUsername', formData.username);
         } else {
           localStorage.removeItem('rememberedUsername');
         }
+
         alert(result.message || 'Đăng nhập thành công!');
-        navigate('/user');
+
+     
+        if (userData.role === "ADMIN") {
+          navigate("/admin");
+        } else {
+          navigate("/user");
+        }
+
       } else {
         alert(result.error);
       }
@@ -62,6 +73,7 @@ function Login() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="login-container">

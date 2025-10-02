@@ -1,14 +1,13 @@
-// userService.js
 import { api } from '../api/client';
 
 class UserService {
 
   async get10sucmanh(){
-    const response = await api.get('/top10sucmanh');
+    const response = await api.get('/top10/sucmanh');
     return response;
   }
   async get10vang(){
-    const response = await api.get('/top10vang');
+    const response = await api.get('/top10/vang');
     return response;
   }
   async login(username, password) {
