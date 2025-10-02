@@ -1,29 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import UserService from '../../services/userService';
 import './Login.scss';
 import { useNavigate } from 'react-router-dom';
 
+interface FormData {
+  username: string;
+  password: string;
+}
+
+interface FormErrors {
+  username?: string;
+  password?: string;
+}
+
+interface UserData {
+  role: string;
+  username: string;
+  [key: string]: any;
+}
+
 function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     username: '',
     password: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
 
-
-
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
 
-    if (errors[name]) {
+    if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({
         ...prev,
         [name]: ''
@@ -31,19 +45,18 @@ function Login() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setLoading(true);
     try {
       const result = await UserService.login(formData.username, formData.password);
       if (result.success) {
-        const userData = {
+        const userData: UserData = {
           ...result.data,
           username: formData.username
         };
 
-      
         localStorage.setItem('currentUser', JSON.stringify(userData));
         const saved = localStorage.getItem('currentUser');
         console.log("Saved user:", saved);
@@ -56,7 +69,6 @@ function Login() {
 
         alert(result.message || 'Đăng nhập thành công!');
 
-     
         if (userData.role === "ADMIN") {
           navigate("/admin");
         } else {
@@ -73,7 +85,6 @@ function Login() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="login-container">
@@ -135,7 +146,7 @@ function Login() {
               />
               Ghi nhớ tài khoản
             </label>
-            <button type="button" className="forgot-password" onClick={() => (window.location.href = '/forgot-password')}>
+            <button type="button" className="forgot-password" >
               Quên mật khẩu?
             </button>
           </div>
@@ -148,13 +159,13 @@ function Login() {
 
         <div className="register-link">
           <span>Chưa có tài khoản? </span>
-          <button onClick={() => (window.location.href = '/register')} className="register-button">
+          <button onClick={() => (navigate("/register"))} className="register-button">
             Đăng ký ngay
           </button>
         </div>
 
         <div className="home-link">
-          <button onClick={() => (window.location.href = '/')} className="home-button">
+          <button onClick={() => (navigate("/"))} className="home-button">
             <span className="home-icon">⬅</span> Quay về trang chủ
           </button>
         </div>

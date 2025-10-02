@@ -1,28 +1,41 @@
 import React, { useState } from 'react';
 import UserService from '../../services/userService';
 import './Register.scss';
+import { useNavigate } from 'react-router-dom';
+
+interface FormData {
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
+interface FormErrors {
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 function Register() {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({
     username: '',
     password: '',
     confirmPassword: ''
   });
   
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [errors, setErrors] = useState<FormErrors>({});
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
     
-    // Clear error when user starts typing
-    if (errors[name]) {
+    if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({
         ...prev,
         [name]: ''
@@ -30,39 +43,12 @@ function Register() {
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.username.trim()) {
-      newErrors.username = 'Tên đăng nhập không được để trống';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Tên đăng nhập phải có ít nhất 3 ký tự';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Mật khẩu không được để trống';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
     
     setLoading(true);
     
-     try {
+    try {
       const result = await UserService.register(formData.username, formData.password);
       
       if (result.success) {
@@ -72,7 +58,7 @@ function Register() {
           password: '',
           confirmPassword: ''
         });
-        window.location.href = '/login';
+        navigate("/login");
       } else {
         alert(result.error);
       }
@@ -163,16 +149,15 @@ function Register() {
           </button>
         </form>
 
-  
         <div className="login-link">
           <span>Đã có tài khoản? </span>
-          <button onClick={() => (window.location.href = '/login')} className="login-button">
+          <button onClick={() => (navigate("/login"))} className="login-button">
             Đăng nhập ngay
           </button>
         </div>
 
         <div className="home-link">
-          <button onClick={() => (window.location.href = '/')} className="home-button">
+          <button onClick={() => (navigate("/"))} className="home-button">
             <span className="home-icon">⬅</span> Quay về trang chủ
           </button>
         </div>

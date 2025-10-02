@@ -1,4 +1,3 @@
-import React from 'react';
 import './home.scss';
 import Beerus from "../../assets/beerus-01.png";
 import Hit from "../../assets/zA4dnaP_d.webp";

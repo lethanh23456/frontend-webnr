@@ -1,27 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, MouseEvent } from 'react';
 import adminService from '../../services/adminService';
 import './admin.scss';
 import { useNavigate } from 'react-router-dom';
 
+type TabType = 'ban' | 'role';
+type RoleType = 'USER' | 'ADMIN';
+type MessageType = 'success' | 'error' | '';
+
+interface FormData {
+  username: string;
+  newRole: RoleType;
+  adminName: string;
+}
+
+interface Message {
+  type: MessageType;
+  text: string;
+}
+
+interface CurrentUser {
+  username: string;
+  role: string;
+}
+
 function Admin() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('ban');
-  const [formData, setFormData] = useState({
+  const [activeTab, setActiveTab] = useState<TabType>('ban');
+  const [formData, setFormData] = useState<FormData>({
     username: '',
     newRole: 'USER',
     adminName: '' 
   });
-  const [message, setMessage] = useState({ type: '', text: '' });
-  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<Message>({ type: '', text: '' });
+  const [loading, setLoading] = useState<boolean>(false);
 
-
-  React.useEffect(() => {
-    const currentUserStr = localStorage.getItem('currentUser');
+  useEffect(() => {
+    const currentUserStr: string | null = localStorage.getItem('currentUser');
     if (currentUserStr) {
-      const currentUser = JSON.parse(currentUserStr);
+      const currentUser: CurrentUser = JSON.parse(currentUserStr);
       setFormData(prev => ({ ...prev, adminName: currentUser.username }));
       
-   
       if (currentUser.role !== 'ADMIN') {
         alert('Bạn không có quyền truy cập trang này!');
         navigate("/");
@@ -30,9 +48,9 @@ function Admin() {
       alert('Vui lòng đăng nhập!');
       navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -40,12 +58,12 @@ function Admin() {
     }));
   };
 
-  const showMessage = (type, text) => {
+  const showMessage = (type: MessageType, text: string): void => {
     setMessage({ type, text });
     setTimeout(() => setMessage({ type: '', text: '' }), 5000);
   };
 
-  const handleBanUser = async (e) => {
+  const handleBanUser = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!formData.username.trim()) {
       showMessage('error', 'Vui lòng nhập username!');
@@ -54,20 +72,20 @@ function Admin() {
 
     setLoading(true);
     try {
-      const response = await adminService.banUser(
+      const response: string = await adminService.banUser(
         formData.username,
         formData.adminName
       );
       showMessage('success', response);
       setFormData(prev => ({ ...prev, username: '' }));
     } catch (error) {
-      showMessage('error', error);
+      showMessage('error', error as string);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUnbanUser = async (e) => {
+  const handleUnbanUser = async (e: MouseEvent<HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
     if (!formData.username.trim()) {
       showMessage('error', 'Vui lòng nhập username!');
@@ -76,20 +94,20 @@ function Admin() {
 
     setLoading(true);
     try {
-      const response = await adminService.unbanUser(
+      const response: string = await adminService.unbanUser(
         formData.username,
         formData.adminName
       );
       showMessage('success', response);
       setFormData(prev => ({ ...prev, username: '' }));
     } catch (error) {
-      showMessage('error', error);
+      showMessage('error', error as string);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateRole = async (e) => {
+  const handleUpdateRole = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!formData.username.trim()) {
       showMessage('error', 'Vui lòng nhập username!');
@@ -98,7 +116,7 @@ function Admin() {
 
     setLoading(true);
     try {
-      const response = await adminService.updateRole(
+      const response: string = await adminService.updateRole(
         formData.username,
         formData.newRole,
         formData.adminName
@@ -106,7 +124,7 @@ function Admin() {
       showMessage('success', response);
       setFormData(prev => ({ ...prev, username: '', newRole: 'USER' }));
     } catch (error) {
-      showMessage('error', error);
+      showMessage('error', error as string);
     } finally {
       setLoading(false);
     }

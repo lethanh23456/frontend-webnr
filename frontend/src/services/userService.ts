@@ -6,11 +6,13 @@ class UserService {
     const response = await api.get('/top10/sucmanh');
     return response;
   }
+  
   async get10vang(){
     const response = await api.get('/top10/vang');
     return response;
   }
-  async login(username, password) {
+  
+  async login(username: string, password: string) {
     try {
       const response = await api.post('/login', {
         username: username,
@@ -21,7 +23,7 @@ class UserService {
         data: response.data,
         message: 'Đăng nhập thành công!'
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi đăng nhập:', error);
       
       if (error.response?.status === 401) {
@@ -38,7 +40,7 @@ class UserService {
     }
   }
 
-  async register(username, password) {
+  async register(username: string, password: string) {
     try {
       const response = await api.post('/register', {
         username: username,
@@ -59,7 +61,7 @@ class UserService {
           error: 'Tên đăng nhập đã tồn tại!'
         };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi đăng ký:', error);
       
       if (error.response?.status === 400) {
@@ -83,14 +85,14 @@ class UserService {
     }
   }
 
-  async getBalance(username) {
+  async getBalance(username: string) {
     try {
       const response = await api.get(`/balance/${username}`);
       return {
         success: true,
         data: response.data
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi load balance:', error);
       return {
         success: false,
@@ -99,7 +101,7 @@ class UserService {
     }
   }
 
-  async addVangNapTuWeb(username, amount) {
+  async addVangNapTuWeb(username: string, amount: number) {
     try {
       const response = await api.post('/addVangNapTuWeb', {
         username: username,
@@ -111,7 +113,7 @@ class UserService {
         data: response.data,
         message: `Nạp ${amount} vàng thành công! Tổng: ${response.data.totalVangNapTuWeb}`
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi nạp vàng:', error);
       return {
         success: false,
@@ -120,7 +122,7 @@ class UserService {
     }
   }
 
-  async addNgocNapTuWeb(username, amount) {
+  async addNgocNapTuWeb(username: string, amount: number) {
     try {
       const response = await api.post('/addNgocNapTuWeb', {
         username: username,
@@ -132,7 +134,7 @@ class UserService {
         data: response.data,
         message: `Nạp ${amount} ngọc thành công! Tổng: ${response.data.totalNgocNapTuWeb}`
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi nạp ngọc:', error);
       return {
         success: false,
@@ -141,49 +143,7 @@ class UserService {
     }
   }
 
-  async useVangNapTuWeb(username, amount) {
-    try {
-      const response = await api.post('/useVangNapTuWeb', {
-        username: username,
-        amount: amount
-      });
-      
-      return {
-        success: true,
-        data: response.data,
-        message: `Đã sử dụng ${amount} vàng nạp từ web! Còn lại: ${response.data.remainingVangNapTuWeb}`
-      };
-    } catch (error) {
-      console.error('Lỗi khi sử dụng vàng:', error);
-      return {
-        success: false,
-        error: error.response?.data?.error || 'Không thể sử dụng vàng!'
-      };
-    }
-  }
-
-  async useNgocNapTuWeb(username, amount) {
-    try {
-      const response = await api.post('/useNgocNapTuWeb', {
-        username: username,
-        amount: amount
-      });
-      
-      return {
-        success: true,
-        data: response.data,
-        message: `Đã sử dụng ${amount} ngọc nạp từ web! Còn lại: ${response.data.remainingNgocNapTuWeb}`
-      };
-    } catch (error) {
-      console.error('Lỗi khi sử dụng ngọc:', error);
-      return {
-        success: false,
-        error: error.response?.data?.error || 'Không thể sử dụng ngọc!'
-      };
-    }
-  }
-
-  validateDepositAmount(amount) {
+  validateDepositAmount(amount: any) {
     if (!amount || isNaN(amount) || parseInt(amount) <= 0) {
       return {
         isValid: false,

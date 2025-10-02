@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import UserService from '../../services/userService'
+import UserService from '../../services/userService';
 import './user.scss';
 import NhanVat from "../../assets/524.png";
 import { Navigate } from "react-router-dom";
 
-function User() {
-  const [user, setUser] = useState(null);
-  const [currentBalance, setCurrentBalance] = useState(0);
-  const [vangNapTuWeb, setVangNapTuWeb] = useState(0);
-  const [ngocNapTuWeb, setNgocNapTuWeb] = useState(0);
+interface User {
+  username: string;
+  displayName?: string;
+  level?: number;
+  title?: string;
+  achievements?: number;
+  winStreak?: number;
+  role?: string;
+}
 
-  const [showDepositModal, setShowDepositModal] = useState(false);
-  const [depositAmount, setDepositAmount] = useState('');
-  const [depositType, setDepositType] = useState('vang');
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
+type DepositType = 'vang' | 'ngoc';
+
+function User() {
+  const [user, setUser] = useState<User | null>(null);
+  const [currentBalance, setCurrentBalance] = useState<number>(0);
+  const [vangNapTuWeb, setVangNapTuWeb] = useState<number>(0);
+  const [ngocNapTuWeb, setNgocNapTuWeb] = useState<number>(0);
+
+  const [showDepositModal, setShowDepositModal] = useState<boolean>(false);
+  const [depositAmount, setDepositAmount] = useState<string>('');
+  const [depositType, setDepositType] = useState<DepositType>('vang');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
 
   useEffect(() => {
     loadUserFromStorage();
@@ -57,24 +69,26 @@ function User() {
     setVangNapTuWeb(0);
     setNgocNapTuWeb(0);
     setCurrentBalance(0);
-    return <Navigate to="/resgister" replace />;
+    return <Navigate to="/register" replace />;
   };
 
   const handleDeposit = () => {
+    if (!user?.username) return;
+
     const validation = UserService.validateDepositAmount(depositAmount);
     if (!validation.isValid) return;
 
     setLoading(true);
     const action =
       depositType === 'vang'
-        ? UserService.addVangNapTuWeb(user.username, validation.amount)
-        : UserService.addNgocNapTuWeb(user.username, validation.amount);
+        ? UserService.addVangNapTuWeb(user.username, validation.amount!)
+        : UserService.addNgocNapTuWeb(user.username, validation.amount!);
 
     action
       .then(result => {
-        if (result.success) {
-          if (depositType === 'vang') setVangNapTuWeb(result.data.totalVangNapTuWeb);
-          else setNgocNapTuWeb(result.data.totalNgocNapTuWeb);
+        if (result.success && result.data) {
+          if (depositType === 'vang') setVangNapTuWeb(result.data.totalVangNapTuWeb!);
+          else setNgocNapTuWeb(result.data.totalNgocNapTuWeb!);
 
           setDepositAmount('');
           setShowDepositModal(false);
@@ -84,33 +98,13 @@ function User() {
       .finally(() => setLoading(false));
   };
 
-  const useVangNapTuWeb = (amount) => {
-    setLoading(true);
-    UserService.useVangNapTuWeb(user.username, amount)
-      .then(result => {
-        if (result.success) setVangNapTuWeb(prev => prev - amount);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  };
-
-  const useNgocNapTuWeb = (amount) => {
-    setLoading(true);
-    UserService.useNgocNapTuWeb(user.username, amount)
-      .then(result => {
-        if (result.success) setNgocNapTuWeb(prev => prev - amount);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  };
-
-  const formatCurrency = (amount) =>
+  const formatCurrency = (amount: number): string =>
     new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 
-  const formatNumber = (num) =>
+  const formatNumber = (num: number): string =>
     new Intl.NumberFormat('vi-VN').format(num);
 
-  const openDepositModal = (type) => {
+  const openDepositModal = (type: DepositType) => {
     setDepositType(type);
     setShowDepositModal(true);
   };
@@ -126,7 +120,6 @@ function User() {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-
 
   return (
     <div className="user">
@@ -162,7 +155,6 @@ function User() {
             </div>
           </div>
         </div>
-
 
         <div className="balance-section">
           <div className="balance-card">
@@ -208,44 +200,6 @@ function User() {
           </div>
         </div>
 
-  
-        <div className="usage-section">
-          <div className="usage-card">
-            <h3>⚡ Sử dụng tài nguyên</h3>
-            <div className="usage-buttons">
-              <div className="usage-group">
-                <h4>💎 Vàng nạp từ web: {formatNumber(vangNapTuWeb)}</h4>
-                <div className="quick-use">
-                  <button onClick={() => useVangNapTuWeb(1000)} disabled={loading || vangNapTuWeb < 1000}>
-                    Dùng 1,000
-                  </button>
-                  <button onClick={() => useVangNapTuWeb(5000)} disabled={loading || vangNapTuWeb < 5000}>
-                    Dùng 5,000
-                  </button>
-                  <button onClick={() => useVangNapTuWeb(10000)} disabled={loading || vangNapTuWeb < 10000}>
-                    Dùng 10,000
-                  </button>
-                </div>
-              </div>
-              
-              <div className="usage-group">
-                <h4>💠 Ngọc nạp từ web: {formatNumber(ngocNapTuWeb)}</h4>
-                <div className="quick-use">
-                  <button onClick={() => useNgocNapTuWeb(100)} disabled={loading || ngocNapTuWeb < 100}>
-                    Dùng 100
-                  </button>
-                  <button onClick={() => useNgocNapTuWeb(500)} disabled={loading || ngocNapTuWeb < 500}>
-                    Dùng 500
-                  </button>
-                  <button onClick={() => useNgocNapTuWeb(1000)} disabled={loading || ngocNapTuWeb < 1000}>
-                    Dùng 1,000
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="actions-section">
           <div className="action-card">
             <h3>⚡ Hành động nhanh</h3>
@@ -262,7 +216,6 @@ function User() {
             </div>
           </div>
         </div>
-
 
         <div className="activity-section">
           <div className="activity-card">
@@ -297,7 +250,6 @@ function User() {
         </div>
       </div>
 
-  
       {showDepositModal && (
         <div className="modal-overlay" onClick={() => setShowDepositModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
