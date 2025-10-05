@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
+import itemService from '../../services/itemService';
 import './shop.scss';
 
 function Shop() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedItem, setSelectedItem] = useState(null);
   const [sortBy, setSortBy] = useState('featured');
+  const [loading, setLoading] = useState(false);
 
-  // Dữ liệu mẫu
+  // Lấy username từ localStorage
+  const getCurrentUsername = () => {
+    const userStr = localStorage.getItem('currentUser');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      return user.username;
+    }
+    return null;
+  };
+
   const items = [
     {
       id: 1,
@@ -134,6 +145,29 @@ function Shop() {
   const filteredItems = selectedCategory === 'all' 
     ? items 
     : items.filter(item => item.category === selectedCategory);
+
+  // Hàm xử lý khi click "Thêm vào giỏ"
+  const handleAddToCart = async (itemId) => {
+    const username = getCurrentUsername();
+    
+    if (!username) {
+      alert('Vui lòng đăng nhập để mua hàng!');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await itemService.addItemWeb(username, itemId);
+      alert('Đã thêm vào giỏ hàng thành công!');
+      console.log('Response:', response);
+    } catch (error) {
+      console.error('Error:', error);
+      const errorMessage = typeof error === 'string' ? error : error?.message || 'Không thể thêm vào giỏ hàng';
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="shop">
@@ -348,10 +382,10 @@ function Shop() {
                       </div>
                       <button 
                         className="add-to-cart-btn"
-                        disabled={!item.inStock}
-                        onClick={() => setSelectedItem(item)}
+                        disabled={!item.inStock || loading}
+                        onClick={() => handleAddToCart(item.id)}
                       >
-                        {item.inStock ? 'Thêm vào giỏ' : 'Hết hàng'}
+                        {loading ? '...' : item.inStock ? 'Thêm vào giỏ' : 'Hết hàng'}
                       </button>
                     </div>
 
@@ -432,11 +466,19 @@ function Shop() {
                     <input type="number" value="1" className="qty-input" readOnly />
                     <button className="qty-btn">+</button>
                   </div>
-                  <button className="btn-add-cart" disabled={!selectedItem.inStock}>
-                    🛒 Thêm vào giỏ hàng
+                  <button 
+                    className="btn-add-cart" 
+                    disabled={!selectedItem.inStock || loading}
+                    onClick={() => handleAddToCart(selectedItem.id)}
+                  >
+                    {loading ? 'Đang xử lý...' : '🛒 Thêm vào giỏ hàng'}
                   </button>
-                  <button className="btn-buy-now" disabled={!selectedItem.inStock}>
-                    Mua ngay
+                  <button 
+                    className="btn-buy-now" 
+                    disabled={!selectedItem.inStock || loading}
+                    onClick={() => handleAddToCart(selectedItem.id)}
+                  >
+                    {loading ? 'Đang xử lý...' : 'Mua ngay'}
                   </button>
                 </div>
               </div>
