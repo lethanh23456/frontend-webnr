@@ -9,6 +9,7 @@ import VongQuay from "../Pages/vongquay/index";
 import User from "../Pages/user/index";
 import Login from "../Pages/login/index";
 import Admin from "../Pages/admin/index";
+import Shop from "../Pages/shop/index";
 
 
 
@@ -60,6 +61,12 @@ export const routes = [
   {
     path: "/admin",
     element: <Admin />, 
+    
+  },
+
+  {
+    path: "/shop",
+    element: <Shop />, 
     
   },
 

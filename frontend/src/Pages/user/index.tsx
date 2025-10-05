@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserService from '../../services/userService';
 import './user.scss';
 import NhanVat from "../../assets/524.png";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom"; 
 
 interface User {
   username: string;
@@ -27,6 +27,7 @@ function User() {
   const [depositType, setDepositType] = useState<DepositType>('vang');
   const [loading, setLoading] = useState<boolean>(false);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadUserFromStorage();
@@ -69,7 +70,7 @@ function User() {
     setVangNapTuWeb(0);
     setNgocNapTuWeb(0);
     setCurrentBalance(0);
-    return <Navigate to="/register" replace />;
+    navigate('/login');
   };
 
   const handleDeposit = () => {
@@ -118,7 +119,7 @@ function User() {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return   navigate('/register');;
   }
 
   return (
@@ -204,7 +205,7 @@ function User() {
           <div className="action-card">
             <h3>⚡ Hành động nhanh</h3>
             <div className="action-buttons">
-              <button className="action-btn shop-btn">
+              <button className="action-btn shop-btn" onClick={() =>  navigate('/shop')}>
                 🛒 Mua đồ
               </button>
               <button className="action-btn inventory-btn">
