@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'https://backendgamewebnestjs-production.up.railway.app/api/auth';
+const API_BASE_URL = 'http://localhost:8080/api/auth';
 
 export const api = {
   get: async <T = any>(
