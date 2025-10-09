@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import itemService from '../../services/itemService';
 import './shop.scss';
+import blackGoku from "../../assets/avt.png";
+import trungdetu from "../../assets/trung_de_tu.png";
+import aovaitho from "../../assets/ao.png";
+import quanthanlinh from "../../assets/quan.png";
+import gangvaitho from "../../assets/gang.png";
+import giayvaitho from "../../assets/giay.png";
+import rada from "../../assets/rada.png";
+
+
+
 
 function Shop() {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -8,7 +18,7 @@ function Shop() {
   const [sortBy, setSortBy] = useState('featured');
   const [loading, setLoading] = useState(false);
 
-  // Lấy username từ localStorage
+
   const getCurrentUsername = () => {
     const userStr = localStorage.getItem('currentUser');
     if (userStr) {
@@ -21,13 +31,13 @@ function Shop() {
   const items = [
     {
       id: 1,
-      name: 'Dragon Ball Set',
-      description: 'Bộ trang bị rồng huyền thoại tăng sức mạnh vượt trội',
+      name: 'Cải trang black goku',
+      description: 'Cải trang thành Super Black Goku',
       price: 50000,
       originalPrice: 75000,
       currency: 'vang',
       category: 'equipment',
-      image: 'https://via.placeholder.com/400x400/667eea/ffffff?text=Dragon+Set',
+      image: blackGoku,
       inStock: true,
       discount: 33,
       rating: 4.8,
@@ -36,13 +46,13 @@ function Shop() {
     },
     {
       id: 2,
-      name: 'Phoenix Wings',
-      description: 'Đôi cánh phượng hoàng mang lại tốc độ bay cao',
+      name: 'Trứng đệ tử',
+      description: 'Sử dụng vật phẩm có thể giúp người chơi sở hữu đệ tử.',
       price: 1000,
       originalPrice: 1200,
       currency: 'ngoc',
       category: 'equipment',
-      image: 'https://via.placeholder.com/400x400/f093fb/ffffff?text=Wings',
+      image: trungdetu,
       inStock: true,
       discount: 17,
       rating: 4.9,
@@ -51,13 +61,13 @@ function Shop() {
     },
     {
       id: 3,
-      name: 'Healing Potion x10',
-      description: 'Combo 10 lọ thuốc hồi máu lớn, tiết kiệm hơn mua lẻ',
+      name: 'Áo vải thô',
+      description: 'Giúp giảm sát thương',
       price: 5000,
       originalPrice: 5000,
       currency: 'vang',
       category: 'consumable',
-      image: 'https://via.placeholder.com/400x400/4facfe/ffffff?text=Potion',
+      image: aovaitho,
       inStock: true,
       discount: 0,
       rating: 4.7,
@@ -67,13 +77,13 @@ function Shop() {
     },
     {
       id: 4,
-      name: 'Legendary Sword',
-      description: 'Thanh kiếm huyền thoại của các vị anh hùng',
+      name: 'quần thần linh',
+      description: 'Giúp tăng HP',
       price: 2000,
       originalPrice: 2500,
       currency: 'ngoc',
       category: 'weapon',
-      image: 'https://via.placeholder.com/400x400/f6d365/ffffff?text=Sword',
+      image: quanthanlinh,
       inStock: true,
       discount: 20,
       rating: 5.0,
@@ -83,14 +93,14 @@ function Shop() {
     },
     {
       id: 5,
-      name: 'Magic Shield',
-      description: 'Khiên phép thuật chống lại mọi đòn tấn công',
+      name: 'găng vải thô',
+      description: 'Giúp tăng sức đánh',
       price: 30000,
       originalPrice: 30000,
       currency: 'vang',
       category: 'equipment',
-      image: 'https://via.placeholder.com/400x400/43e97b/ffffff?text=Shield',
-      inStock: false,
+      image: gangvaitho,
+      inStock: true,
       discount: 0,
       rating: 4.6,
       reviews: 78,
@@ -98,13 +108,13 @@ function Shop() {
     },
     {
       id: 6,
-      name: 'Speed Boots',
-      description: 'Ủng tăng tốc độ di chuyển và né tránh',
+      name: 'giày vải thô',
+      description: 'Giúp tăng MP',
       price: 800,
       originalPrice: 1000,
       currency: 'ngoc',
       category: 'equipment',
-      image: 'https://via.placeholder.com/400x400/fa709a/ffffff?text=Boots',
+      image: giayvaitho,
       inStock: true,
       discount: 20,
       rating: 4.8,
@@ -114,13 +124,13 @@ function Shop() {
     },
     {
       id: 7,
-      name: 'Mystery Box',
-      description: 'Hộp bí ẩn chứa phần thưởng ngẫu nhiên có giá trị cao',
+      name: 'rada',
+      description: 'Giúp tăng Chí Mạng',
       price: 15000,
       originalPrice: 15000,
       currency: 'vang',
       category: 'special',
-      image: 'https://via.placeholder.com/400x400/feca57/ffffff?text=Box',
+      image: rada,
       inStock: true,
       discount: 0,
       rating: 4.5,
